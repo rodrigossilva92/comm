@@ -32,23 +32,23 @@ class Communication:
         msg = self.ser.read(MSG_LEN)
         print("Received: ",end='')
         print(msg)
-        if msg == None: # empty message
-            return
-#        if self.verifyChecksum(_msg):
-#            return _msg
-        if msg[0] == STR_COM: # answer handshake
-            self.send(STR_COM)
-            self.started = True
-        elif msg[0] == UPD_TIME: # update RTC
-            print("update time")
-            y = (msg[1] << 8) | msg[2]
-            m = msg[3]
-            d = msg[4]
-            h = msg[5]
-            min = msg[6]
-            s = msg[7]
-            datetime = (y,m,d,h,min,s)
-            print(datetime)
+#         if msg == None: # empty message
+#             return
+# #        if self.verifyChecksum(_msg):
+# #            return _msg
+#         if msg[0] == STR_COM: # answer handshake
+#             self.send(STR_COM)
+#             self.started = True
+#         elif msg[0] == UPD_TIME: # update RTC
+#             print("update time")
+#             y = (msg[1] << 8) | msg[2]
+#             m = msg[3]
+#             d = msg[4]
+#             h = msg[5]
+#             min = msg[6]
+#             s = msg[7]
+#             datetime = (y,m,d,h,min,s)
+#             print(datetime)
 
     def generateChecksum(self,msg):
         'Creates a 8 bits checksum.'
