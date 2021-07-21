@@ -3,12 +3,14 @@ from time import localtime
 ### MESSAGE TYPE ID DEFINITION
 STR_COM     = 0b10101010    # start communication
 END_COM     = 0b01010101    # end communication
-UPD_TIME    = 0b11110000    # update timer
+UPD_TIME    = 0b11110000    # update time
 STR_TRANS   = 0b00001111    # start datalog transfer
 MSG_OK      = 0b11001100    # confirmation of message received
 
+
+MSG_FIELDS  = 5
 ### MESSAGE = msgID + N x databytes + msgChecksum
-MSG_LEN     = 10        # number of bytes of message
+MSG_BYTES   = 1 + MSG_FIELDS*4 + 1        # number of bytes of message
 
 class Communication:
 
@@ -17,38 +19,46 @@ class Communication:
         self.started = False    # flag to check if communication has been stablished
 
     def send(self,msgID,data=[]):
-        msg = bytearray(MSG_LEN)
-        msg[0] = msgID
+        msg = b''
+        msgID = msgID.to_bytes(1,'big')
+        msg += msgID
+
         for i in range(len(data)):
-            msg[i+1] = data[i]
-        for i in range(len(data)+1,MSG_LEN):
-            msg[i] = 0b0
-        print("Sent: ",end='')
-        print(msg)
-        #_msg[-1] = self.generateChecksum()
-        self.ser.write(msg)
+            data_bytes = data[i].to_bytes(4,'big')
+            msg += data_bytes
+
+        for i in range(len(data),MSG_FIELDS):
+            x = 0
+            data_bytes = x.to_bytes(4,'big')
+            msg += data_bytes
+
+        print(len(msg))
+
+        # generate checksum
+
+        # self.ser.write(msg)
 
     def receive(self):
         msg = self.ser.read(MSG_LEN)
         print("Received: ",end='')
         print(msg)
-#         if msg == None: # empty message
-#             return
-# #        if self.verifyChecksum(_msg):
-# #            return _msg
-#         if msg[0] == STR_COM: # answer handshake
-#             self.send(STR_COM)
-#             self.started = True
-#         elif msg[0] == UPD_TIME: # update RTC
-#             print("update time")
-#             y = (msg[1] << 8) | msg[2]
-#             m = msg[3]
-#             d = msg[4]
-#             h = msg[5]
-#             min = msg[6]
-#             s = msg[7]
-#             datetime = (y,m,d,h,min,s)
-#             print(datetime)
+        if msg == None: # empty message
+            return
+#        if self.verifyChecksum(_msg):
+#            return _msg
+        if msg[0] == STR_COM: # answer handshake
+            self.send(STR_COM)
+            self.started = True
+        elif msg[0] == UPD_TIME: # update RTC
+            print("update time")
+            y = (msg[1] << 8) | msg[2]
+            m = msg[3]
+            d = msg[4]
+            h = msg[5]
+            min = msg[6]
+            s = msg[7]
+            datetime = (y,m,d,h,min,s)
+            print(datetime)
 
     def generateChecksum(self,msg):
         'Creates a 8 bits checksum.'
@@ -84,10 +94,12 @@ class Communication:
         t = dt[3] * 10000 + dt[4] * 100 + dt[5]
         
         msgID = UPD_TIME
-        msg = []
-        msg.append(d)
-        msg.append(t)
-        print(msg)
+        
+        data = []
+        data.append(d)
+        data.append(t)
+        
+        self.send(msgID,data)
         
         
 
