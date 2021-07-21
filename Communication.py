@@ -8,7 +8,7 @@ STR_TRANS   = 0b00001111    # start datalog transfer
 MSG_OK      = 0b11001100    # confirmation of message received
 
 ### MESSAGE = msgID + N x databytes + msgChecksum
-MSG_LEN     = 8        # number of bytes of message
+MSG_LEN     = 10        # number of bytes of message
 
 class Communication:
 
@@ -78,22 +78,18 @@ class Communication:
     def checkCommunication(self):
         return self.started
 
-    def updateTime(self,retry=5):
-        datetime = localtime()[0:6]
+    def sendDatetime(self,retry=5):
+        dt = localtime()[0:6]
+        d = dt[0] * 10000 + dt[1] * 100 + dt[2]
+        t = dt[3] * 10000 + dt[4] * 100 + dt[5]
+        
         msgID = UPD_TIME
-        data = [0]*7
-        data[0] = (datetime[0] >> 8) & 0b11111111 # year MSB
-        data[1] = datetime[0] & 0b11111111        # year LSB
-        data[2] = datetime[1]  # month
-        data[3] = datetime[2]  # day
-        data[4] = datetime[3]  # hour
-        data[5] = datetime[4]  # minute
-        data[6] = datetime[5]  # second
-        print(data)
-        self.send(msgID,data)
-        #if self.receive():
-        #    return 0
-        #self.updateTime(_datetime,_retry-1)
+        msg = []
+        msg.append(d)
+        msg.append(t)
+        print(msg)
+        
+        
 
 
     def endCommunication(self):
