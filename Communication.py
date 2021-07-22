@@ -1,4 +1,4 @@
-from time import localtime
+from time import sleep, localtime
 
 ### MESSAGE TYPE ID DEFINITION
 STR_COM     = 0b10101010    # start communication
@@ -32,27 +32,33 @@ class Communication:
             data_bytes = x.to_bytes(4,'big')
             msg += data_bytes
 
-        print(len(msg))
+        ### generate checksum
+        ### dummy checksum
+        x = 0
+        data_bytes = x.to_bytes(1,'big')
+        msg += data_bytes
 
-        # generate checksum
-
-        # self.ser.write(msg)
+        print(msg)
+        self.ser.write(msg)
+        sleep(1)
 
     def receive(self):
         msg = self.ser.read(MSG_BYTES)
         print(msg)
         if msg == None: # empty message
             return
+        ### verify checksum
+
         msgID = msg[0]
-        if msgID == UPD_TIME:
+        if msgID == MSG_OK:
+            return MSG_OK
+        elif msgID == UPD_TIME:
             print("update time")
             date    = msg[1:5]
             time    = msg[5:9]
             date = int.from_bytes(date,'big')
             time = int.from_bytes(time,'big')
             print(date,time)
-#        if self.verifyChecksum(_msg):
-#            return _msg
 
 
     def generateChecksum(self,msg):
@@ -96,7 +102,13 @@ class Communication:
         
         self.send(msgID,data)
         
-        
+    
+    def requestLogTransfer(self):
+        msgID = STR_TRANS
+        self.send(msgID)
+        if self.receive() == MSG_OK:
+            return True
+        return False
 
 
     def endCommunication(self):
