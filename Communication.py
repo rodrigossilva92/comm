@@ -44,7 +44,10 @@ class Communication:
 
     def receive(self):
         msg = self.ser.read(MSG_BYTES)
-        print(msg)
+        try:
+            print(len(msg),msg)
+        except:
+            print(msg)
         sleep(1)
         # if msg == None: # empty message
         #     return
