@@ -44,26 +44,28 @@ class Communication:
 
     def receive(self):
         msg = self.ser.read(MSG_BYTES)
-        if msg == None: # empty message
-            return
-        print(len(msg))
-        if len(msg) != MSG_BYTES:
-            return
-        ### verify checksum
+        print(msg)
+        sleep(1)
+        # if msg == None: # empty message
+        #     return
+        # print(len(msg))
+        # if len(msg) != MSG_BYTES:
+        #     return
+        # ### verify checksum
 
-        msgID = msg[0]
-        if msgID == MSG_OK:
-            return MSG_OK
-        elif msgID == STR_TRANS:
-            print("start communication")
-            self.send(MSG_OK)
-        elif msgID == UPD_TIME:
-            print("update time")
-            date    = msg[1:5]
-            time    = msg[5:9]
-            date = int.from_bytes(date,'big')
-            time = int.from_bytes(time,'big')
-            print(date,time)
+        # msgID = msg[0]
+        # if msgID == MSG_OK:
+        #     return MSG_OK
+        # elif msgID == STR_TRANS:
+        #     print("start communication")
+        #     self.send(MSG_OK)
+        # elif msgID == UPD_TIME:
+        #     print("update time")
+        #     date    = msg[1:5]
+        #     time    = msg[5:9]
+        #     date = int.from_bytes(date,'big')
+        #     time = int.from_bytes(time,'big')
+        #     print(date,time)
 
 
     def generateChecksum(self,msg):

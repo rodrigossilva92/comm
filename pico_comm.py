@@ -14,7 +14,5 @@ com = Communication(hc12)
 
 
 while True:
-    msg = com.receive()
-    # print(msg)
-    sleep(1)
+    msg = com.receive()   
     
