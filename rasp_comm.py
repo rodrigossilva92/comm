@@ -13,4 +13,9 @@ hc12 = serial.Serial(port='/dev/ttyS0',
 com = Communication(hc12)
 
 while True:
+    print("--- handshake")
+    com.sendHandshake()
+    print("--- update time")
+    com.sendDatetime()
+    print("--- request transfer")
     com.requestLogTransfer()

@@ -44,11 +44,12 @@ class Communication:
 
     def receive(self):
         msg = self.ser.read(MSG_BYTES)
+        sleep(1)
         try:
             print(len(msg),msg)
         except:
             print(msg)
-        sleep(1)
+        
         # if msg == None: # empty message
         #     return
         # print(len(msg))
@@ -84,20 +85,15 @@ class Communication:
         if sum(msg) == 255:
             return True
 
-    def sendHandshake(self):
-        'Send start communication signal.'
-        if not self.started:
-            _msgID = STR_COM
-            self.send(_msgID)
-            self.receive()
-    
-    def waitHandshake(self):
-        'Wait for communication signal.'
-        if not self.started:
-            self.receive()
-            
     def checkCommunication(self):
         return self.started
+
+    def sendHandshake(self):
+        'Send start communication signal.'
+        msgID = STR_COM
+        self.send(msgID)
+        self.receive()
+            
 
     def sendDatetime(self,retry=5):
         dt = localtime()[0:6]
@@ -111,15 +107,13 @@ class Communication:
         data.append(t)
         
         self.send(msgID,data)
+        self.receive()
         
     
     def requestLogTransfer(self):
         msgID = STR_TRANS
         self.send(msgID)
-        # print(self.receive())
-        # if self.receive() is MSG_OK:
-            # return True
-        # return False
+        self.receive()
 
 
     def endCommunication(self):
