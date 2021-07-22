@@ -34,30 +34,36 @@ class Communication:
 
         ### generate checksum
         ### dummy checksum
-        x = 0
+        x = 0b11111111
         data_bytes = x.to_bytes(1,'big')
         msg += data_bytes
 
         print(len(msg),msg)
         self.ser.write(msg)
-        sleep(1)
+        # sleep(1)
 
     def receive(self):
         msg = self.ser.read(MSG_BYTES)
-        sleep(1)
         try:
             print(len(msg),msg)
         except:
-            print(msg)
+            # print(msg)
+            pass
         
-        # if msg == None: # empty message
-        #     return
-        # print(len(msg))
-        # if len(msg) != MSG_BYTES:
-        #     return
+        if msg == None: # empty message
+            return False
+        if len(msg) != MSG_BYTES:
+            return False
         # ### verify checksum
 
         # msgID = msg[0]
+        # if msgID == STR_COM:
+        #     print("star communication")
+        #     self.send(MSG_OK)
+        # elif msgID == UPD_TIME:
+        #     print("update time")
+        # elif msgID == STR_TRANS:
+        #     print("start transfer")
         # if msgID == MSG_OK:
         #     return MSG_OK
         # elif msgID == STR_TRANS:
@@ -91,8 +97,9 @@ class Communication:
     def sendHandshake(self):
         'Send start communication signal.'
         msgID = STR_COM
+        # print("send handshake")
         self.send(msgID)
-        self.receive()
+        # self.receive()
             
 
     def sendDatetime(self,retry=5):
