@@ -14,3 +14,4 @@ com = Communication(hc12)
 
 while True:
     com.requestLogTransfer()
+    sleep(1)

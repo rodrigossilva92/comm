@@ -108,8 +108,9 @@ class Communication:
     def requestLogTransfer(self):
         msgID = STR_TRANS
         self.send(msgID)
-        if self.receive() == MSG_OK:
-            return True
+        print(self.receive())
+        # if self.receive() is MSG_OK:
+            # return True
         return False
 
 
