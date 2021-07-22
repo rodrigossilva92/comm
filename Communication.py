@@ -10,7 +10,7 @@ MSG_OK      = 0b11001100    # confirmation of message received
 
 MSG_FIELDS  = 5
 ### MESSAGE = msgID + N x databytes + msgChecksum
-MSG_BYTES   = 1 + MSG_FIELDS*4 #+ 1        # number of bytes of message
+MSG_BYTES   = 1 + MSG_FIELDS*4 + 1        # number of bytes of message
 
 class Communication:
 
@@ -44,7 +44,10 @@ class Communication:
 
     def receive(self):
         msg = self.ser.read(MSG_BYTES)
-        print(msg)
+        try:
+            print(len(msg),msg)
+        except:
+            print(msg)
         sleep(1)
         # if msg == None: # empty message
         #     return
