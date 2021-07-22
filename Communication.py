@@ -10,7 +10,7 @@ MSG_OK      = 0b11001100    # confirmation of message received
 
 MSG_FIELDS  = 5
 ### MESSAGE = msgID + N x databytes + msgChecksum
-MSG_BYTES   = 1 + MSG_FIELDS*4 + 1        # number of bytes of message
+MSG_BYTES   = 1 + MSG_FIELDS*4 #+ 1        # number of bytes of message
 
 class Communication:
 
@@ -39,26 +39,21 @@ class Communication:
         # self.ser.write(msg)
 
     def receive(self):
-        msg = self.ser.read(MSG_LEN)
-        print("Received: ",end='')
+        msg = self.ser.read(MSG_BYTES)
         print(msg)
         if msg == None: # empty message
             return
+        msgID = msg[0]
+        if msgID == UPD_TIME:
+            print("update time")
+            date    = msg[1:5]
+            time    = msg[5:9]
+            date = int.from_bytes(date,'big')
+            time = int.from_bytes(time,'big')
+            print(date,time)
 #        if self.verifyChecksum(_msg):
 #            return _msg
-        if msg[0] == STR_COM: # answer handshake
-            self.send(STR_COM)
-            self.started = True
-        elif msg[0] == UPD_TIME: # update RTC
-            print("update time")
-            y = (msg[1] << 8) | msg[2]
-            m = msg[3]
-            d = msg[4]
-            h = msg[5]
-            min = msg[6]
-            s = msg[7]
-            datetime = (y,m,d,h,min,s)
-            print(datetime)
+
 
     def generateChecksum(self,msg):
         'Creates a 8 bits checksum.'
