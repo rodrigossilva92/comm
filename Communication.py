@@ -47,6 +47,8 @@ class Communication:
         print(msg)
         if msg == None: # empty message
             return
+        if len(msg) != MSG_BYTES:
+            return
         ### verify checksum
 
         msgID = msg[0]
