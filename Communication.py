@@ -10,7 +10,7 @@ MSG_OK      = 0b11001100    # confirmation of message received
 
 MSG_FIELDS  = 5
 ### MESSAGE = msgID + N x databytes + msgChecksum
-MSG_BYTES   = 1 + MSG_FIELDS*4 #+ 1        # number of bytes of message
+MSG_BYTES   = 1 + MSG_FIELDS*4 + 1        # number of bytes of message
 
 class Communication:
 
@@ -38,7 +38,7 @@ class Communication:
         data_bytes = x.to_bytes(1,'big')
         msg += data_bytes
 
-        print(len(msg))
+        print(len(msg),msg)
         self.ser.write(msg)
         sleep(1)
 
@@ -113,10 +113,10 @@ class Communication:
     def requestLogTransfer(self):
         msgID = STR_TRANS
         self.send(msgID)
-        print(self.receive())
+        # print(self.receive())
         # if self.receive() is MSG_OK:
             # return True
-        return False
+        # return False
 
 
     def endCommunication(self):
