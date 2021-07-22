@@ -38,29 +38,34 @@ class Communication:
         data_bytes = x.to_bytes(1,'big')
         msg += data_bytes
 
-        print(msg)
+        print(len(msg))
         self.ser.write(msg)
         sleep(1)
 
     def receive(self):
         msg = self.ser.read(MSG_BYTES)
         print(msg)
-        if msg == None: # empty message
-            return
-        if len(msg) != MSG_BYTES:
-            return
-        ### verify checksum
+        sleep(1)
+        # if msg == None: # empty message
+        #     return
+        # print(len(msg))
+        # if len(msg) != MSG_BYTES:
+        #     return
+        # ### verify checksum
 
-        msgID = msg[0]
-        if msgID == MSG_OK:
-            return MSG_OK
-        elif msgID == UPD_TIME:
-            print("update time")
-            date    = msg[1:5]
-            time    = msg[5:9]
-            date = int.from_bytes(date,'big')
-            time = int.from_bytes(time,'big')
-            print(date,time)
+        # msgID = msg[0]
+        # if msgID == MSG_OK:
+        #     return MSG_OK
+        # elif msgID == STR_TRANS:
+        #     print("start communication")
+        #     self.send(MSG_OK)
+        # elif msgID == UPD_TIME:
+        #     print("update time")
+        #     date    = msg[1:5]
+        #     time    = msg[5:9]
+        #     date = int.from_bytes(date,'big')
+        #     time = int.from_bytes(time,'big')
+        #     print(date,time)
 
 
     def generateChecksum(self,msg):
