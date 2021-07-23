@@ -1,4 +1,4 @@
-from time import sleep, localtime
+from time import sleep, localtime, time
 
 ### MESSAGE TYPE ID DEFINITION
 STR_COM     = 0b10101010    # start communication
@@ -40,15 +40,16 @@ class Communication:
 
         print(len(msg),msg)
         self.ser.write(msg)
-        # sleep(1)
+        sleep(1)
 
     def receive(self):
         msg = self.ser.read(MSG_BYTES)
-        try:
-            print(len(msg),msg)
-        except:
-            # print(msg)
-            pass
+        print(msg)
+        # try:
+        #     print(len(msg),msg)
+        # except:
+        #     # print(msg)
+        #     pass
         
         if msg == None: # empty message
             return False
@@ -56,10 +57,10 @@ class Communication:
             return False
         # ### verify checksum
 
-        # msgID = msg[0]
-        # if msgID == STR_COM:
-        #     print("star communication")
-        #     self.send(MSG_OK)
+        msgID = msg[0]
+        if msgID == STR_COM:
+            print("start communication")
+            self.send(MSG_OK)
         # elif msgID == UPD_TIME:
         #     print("update time")
         # elif msgID == STR_TRANS:
@@ -93,6 +94,16 @@ class Communication:
 
     def checkCommunication(self):
         return self.started
+
+    def waitReply(self):
+        dt = 10
+        now = time()
+        while time() - now <= 10:
+            self.receive()
+            # print("waiting")
+            # sleep(.5)
+
+
 
     def sendHandshake(self):
         'Send start communication signal.'
